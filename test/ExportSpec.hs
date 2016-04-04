@@ -40,6 +40,9 @@ data Position
   | End
   deriving (Generic,ElmType)
 
+data NoContent = NoContent
+  deriving (Generic,ElmType)
+
 spec :: Hspec.Spec
 spec =
   do toElmTypeSpec
@@ -78,6 +81,12 @@ toElmTypeSpec =
          defaultOptions
          (Proxy :: Proxy Position)
          "test/PositionType.elm"
+     it "toElmTypeSource NoContent" $
+       shouldMatchTypeSource
+         (unlines ["module Main (..) where","","","%s"])
+         defaultOptions
+         (Proxy :: Proxy NoContent)
+         "test/NoContentType.elm"
      it "toElmTypeSourceWithOptions Post" $
        shouldMatchTypeSource
          (unlines ["module PostTypeWithOptions exposing (..)"
@@ -248,7 +257,7 @@ shouldMatchFile actual fileExpected =
 initCap :: Text -> Text
 initCap t =
     case uncons t of
-        Nothing -> t
+        Nothing      -> t
         Just (c, cs) -> cons (Data.Char.toUpper c) cs
 
 withPrefix :: Text -> Text -> Text

@@ -2,10 +2,10 @@
 module Elm.Record (toElmTypeSource,toElmTypeSourceWith) where
 
 import           Control.Monad.Reader
+import           Data.Text
 import           Elm.Common
 import           Elm.Type
 import           Formatting
-import Data.Text
 
 render :: ElmTypeExpr -> Reader Options Text
 
@@ -16,6 +16,9 @@ render (TopLevel (DataType dataTypeName record@(Record _ _))) =
 render (TopLevel (DataType d s@(Sum _ _))) =
     sformat ("type " % stext % "\n    = " % stext) d <$> render s
 
+
+render (TopLevel (DataType d c@(Constructor _ _))) =
+  sformat ("type " % stext % "\n  = " % stext) d <$> render c
 
 render (DataType d _) = return d
 render (Primitive s) = return s
